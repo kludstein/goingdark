@@ -319,14 +319,30 @@ async function syncAll() {
   btn.className = 'sync-btn syncing';
   document.getElementById('syncLabel').textContent = 'Cargando…';
   let errs = 0;
-  await Promise.all(['training','habits','mind','social'].map(t =>
-    fetchRaw(t).catch(() => errs++)
+  const results = await Promise.allSettled(['training','habits','mind','social'].map(t =>
+    fetchRaw(t)
   ));
+  results.forEach((r,i) => {
+    if (r.status === 'rejected') {
+      errs++;
+      console.error(['training','habits','mind','social'][i], r.reason);
+    }
+  });
   busy = false;
   btn.className = errs ? 'sync-btn err' : 'sync-btn ok';
-  document.getElementById('syncLabel').textContent = errs ? `${errs} errores` : '✓ Listo';
+  document.getElementById('syncLabel').textContent = errs ? `${errs} error(es)` : '✓ Listo';
   setTimeout(() => { btn.className='sync-btn'; document.getElementById('syncLabel').textContent='Sincronizar'; }, 2800);
-  renderAll();
+  try { renderAll(); } catch(e) { console.error('renderAll error:', e); showGlobalError(e); }
+}
+
+function showGlobalError(e) {
+  document.querySelectorAll('.screen.active [id$="-content"]').forEach(el => {
+    el.innerHTML = `<div class="state-box">
+      <div style="font-size:32px">⚠️</div>
+      <div class="state-title">Error al procesar datos</div>
+      <div class="state-sub" style="font-size:11px;text-align:left;background:var(--bg3);padding:10px;border-radius:8px;margin-top:4px">${e.message}</div>
+    </div>`;
+  });
 }
 
 /* ─── NAV ─────────────────────────────────────────────── */
@@ -858,7 +874,8 @@ function renderSocial() {
 }
 
 /* ─── RENDER ALL ─────────────────────────────────────────── */
-function renderAll(){ renderTraining(); renderHabits(); renderMind(); renderSocial(); }
+function safeRender(fn,elId){try{fn()}catch(e){console.error(elId,e);const el=document.getElementById(elId);if(el)el.innerHTML=`<div class="state-box"><div style="font-size:28px">⚠️</div><div class="state-title">Error al mostrar</div><div class="state-sub">${e.message}</div></div>`;}}
+function renderAll(){safeRender(renderTraining,"t-content");safeRender(renderHabits,"h-content");safeRender(renderMind,"m-content");safeRender(renderSocial,"s-content");}
 
 /* ─── INIT ─────────────────────────────────────────────── */
 (function(){
@@ -871,13 +888,10 @@ function renderAll(){ renderTraining(); renderHabits(); renderMind(); renderSoci
   );
 
   // Render from cache immediately (instant load)
-  renderAll();
+  try { renderAll(); } catch(e) { console.error('init render:', e); }
 
-  // Auto-sync if cache is empty or stale (> 1 hora)
-  const hasCacheData = ['training','habits','mind','social'].some(k => C[k]?.rows?.length);
-  const ts = Math.min(...['training','habits','mind','social'].map(k => C[k]?.ts||0));
-  const age = Date.now() - (isFinite(ts)?ts:0);
-  if(!hasCacheData || age > 60*60*1000) syncAll();
+  // Always sync on load to get fresh data
+  syncAll();
 })();
 </script>
 </body>
