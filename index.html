@@ -6,1483 +6,879 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Superhuman">
-<meta name="theme-color" content="#0A0A0F">
-<title>⚡ Superhuman Tracker</title>
-
+<meta name="theme-color" content="#07070D">
+<title>⚡ Superhuman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-
 :root {
-  --bg: #0A0A0F;
-  --bg2: #111118;
-  --bg3: #1A1A28;
-  --card: #16161E;
-  --card2: #1E1E2C;
-  --border: rgba(255,255,255,0.08);
-  --orange: #FF6B35;
-  --teal: #00D4AA;
-  --purple: #8B5CF6;
-  --yellow: #F59E0B;
-  --red: #FF4444;
-  --green: #22C55E;
-  --text: #F0F0F5;
-  --muted: rgba(240,240,245,0.45);
-  --radius: 16px;
-  --safe-top: env(safe-area-inset-top);
-  --safe-bot: env(safe-area-inset-bottom);
+  --bg:#07070D; --bg2:#0E0E18; --bg3:#161624;
+  --card:#111120; --card2:#1A1A2E;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
+  --text:#EEEEF5; --muted:rgba(238,238,245,0.38); --muted2:rgba(238,238,245,0.6);
+  --fire:#FF5F1F; --teal:#00E5B0; --violet:#9B8AFF; --gold:#F6C90E;
+  --red:#FF4D4D; --green:#2ECC71;
+  --r:14px;
+  --safe-top:env(safe-area-inset-top); --safe-bot:env(safe-area-inset-bottom);
 }
-
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-body {
-  font-family: 'Syne', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  overflow-x: hidden;
-  padding-bottom: calc(80px + var(--safe-bot));
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:-webkit-fill-available}
+body{
+  font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;min-height:-webkit-fill-available;
+  overflow-x:hidden;padding-bottom:calc(72px + var(--safe-bot));
 }
-
-/* NAV */
-.nav {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(10,10,15,0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  padding: 8px 0 calc(8px + var(--safe-bot));
-  display: flex;
-  z-index: 100;
-}
-
-.nav-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 6px 4px;
-  border: none;
-  background: none;
-  color: var(--muted);
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.nav-btn .icon { font-size: 22px; line-height: 1; }
-
-.nav-btn.active { color: var(--text); }
-.nav-btn.active .icon { transform: scale(1.15); }
-
-.nav-btn[data-tab="training"].active { color: var(--orange); }
-.nav-btn[data-tab="habits"].active { color: var(--teal); }
-.nav-btn[data-tab="mind"].active { color: var(--purple); }
-.nav-btn[data-tab="social"].active { color: var(--yellow); }
 
 /* HEADER */
-.header {
-  padding: calc(var(--safe-top) + 20px) 20px 20px;
-  background: linear-gradient(180deg, var(--bg2) 0%, transparent 100%);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(10px);
+.header{
+  position:sticky;top:0;z-index:60;
+  padding:calc(var(--safe-top) + 14px) 18px 14px;
+  background:linear-gradient(180deg,var(--bg) 75%,transparent);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
 }
+.htitle{
+  font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.06em;
+  background:linear-gradient(135deg,#fff 0%,rgba(238,238,245,.55) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hdate{font-size:10.5px;color:var(--muted);font-weight:500;letter-spacing:.04em;margin-top:1px}
+.sync-btn{
+  display:flex;align-items:center;gap:6px;flex-shrink:0;
+  background:var(--card2);border:1px solid var(--border2);border-radius:20px;
+  padding:8px 14px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;
+  color:var(--muted2);cursor:pointer;transition:all .2s;-webkit-appearance:none;
+}
+.sync-btn:active{transform:scale(.94)}
+.sync-btn.syncing .si{animation:spin .7s linear infinite;display:inline-block}
+.sync-btn.ok{color:var(--teal);border-color:rgba(0,229,176,.3)}
+.sync-btn.err{color:var(--red);border-color:rgba(255,77,77,.3)}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.header-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
+/* NAV */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(7,7,13,.95);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  padding:8px 0 calc(10px + var(--safe-bot));
+  display:grid;grid-template-columns:repeat(4,1fr);
 }
-
-.header-title {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+.nb{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:5px 4px;border:none;background:none;
+  font-family:'Outfit',sans-serif;font-size:9px;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--muted);cursor:pointer;
 }
-
-.header-date {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.header-streak {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--orange);
-  background: rgba(255,107,53,0.12);
-  padding: 4px 10px;
-  border-radius: 20px;
-}
+.nb .ni{font-size:21px;line-height:1;transition:transform .2s}
+.nb.active .ni{transform:scale(1.2) translateY(-1px)}
+.nb[data-t=training].active{color:var(--fire)}
+.nb[data-t=habits].active{color:var(--teal)}
+.nb[data-t=mind].active{color:var(--violet)}
+.nb[data-t=social].active{color:var(--gold)}
 
 /* SCREENS */
-.screen { display: none; padding: 0 16px; animation: fadeIn 0.25s ease; }
-.screen.active { display: block; }
+.screen{display:none;padding:2px 14px 20px;animation:rise .2s ease}
+.screen.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* STATES */
+.state-box{margin:50px auto;max-width:260px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.spinner{width:34px;height:34px;border:3px solid var(--border2);border-top-color:var(--fire);border-radius:50%;animation:spin .75s linear infinite}
+.state-title{font-size:15px;font-weight:700}
+.state-sub{font-size:12.5px;color:var(--muted);line-height:1.6}
 
-/* CARDS */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 12px;
-}
+/* SECTION */
+.slabel{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:16px 0 7px 2px}
 
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.card-title {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.card-badge {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-/* SECTION TITLE */
-.section-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 20px 0 10px 4px;
-}
-
-/* ═══════════════════════════════════════
-   TRAINING SCREEN
-═══════════════════════════════════════ */
-
-.month-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
-
-.month-day-label {
-  text-align: center;
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 0.05em;
-  padding-bottom: 4px;
-}
-
-.month-day {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-  font-family: 'DM Mono', monospace;
-}
-
-.month-day.empty { opacity: 0; pointer-events: none; }
-.month-day.today { outline: 2px solid var(--orange); outline-offset: -2px; }
-.month-day.trained {
-  background: var(--orange);
-  color: white;
-}
-.month-day.rest {
-  background: var(--bg3);
-  color: var(--muted);
-}
-.month-day:active { transform: scale(0.92); }
-
-/* Session detail modal */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(6px);
-  z-index: 200;
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-
-.modal {
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-radius: 24px 24px 0 0;
-  padding: 20px 20px calc(20px + var(--safe-bot));
-  width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
-  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
-.modal-handle {
-  width: 36px;
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
-  margin: 0 auto 20px;
-}
-
-.modal-title {
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.modal-sub {
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 20px;
-}
-
-.exercise-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.exercise-row:last-child { border-bottom: none; }
-
-.ex-name { font-size: 14px; font-weight: 600; }
-.ex-cat { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.ex-stats {
-  text-align: right;
-  font-family: 'DM Mono', monospace;
-}
-.ex-weight { font-size: 16px; font-weight: 700; color: var(--orange); }
-.ex-detail { font-size: 11px; color: var(--muted); }
-
-/* Progress table */
-.progress-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-.progress-table th {
-  background: var(--bg3);
-  padding: 8px;
-  text-align: center;
-  color: var(--muted);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.progress-table td {
-  padding: 10px 8px;
-  text-align: center;
-  border-bottom: 1px solid var(--border);
-  font-family: 'DM Mono', monospace;
-}
-.progress-table tr:last-child td { border-bottom: none; }
-.progress-table .ex-col { text-align: left; font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; }
-.progress-table .highlight { color: var(--teal); font-weight: 700; }
-
-/* ═══════════════════════════════════════
-   HABITS SCREEN
-═══════════════════════════════════════ */
-
-.habit-streak-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-}
-.habit-streak-card:last-child { border-bottom: none; }
-
-.habit-icon { font-size: 28px; flex-shrink: 0; }
-
-.habit-info { flex: 1; min-width: 0; }
-.habit-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.habit-meta { font-size: 11px; color: var(--muted); }
-
-.habit-streak-num {
-  font-family: 'DM Mono', monospace;
-  font-size: 28px;
-  font-weight: 700;
-  flex-shrink: 0;
-  text-align: right;
-  line-height: 1;
-}
-.habit-streak-unit { font-size: 10px; color: var(--muted); text-align: right; }
-
-.streak-bar-wrap {
-  height: 4px;
-  background: var(--bg3);
-  border-radius: 2px;
-  margin-top: 6px;
-  overflow: hidden;
-}
-.streak-bar {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Cal mini */
-.cal-mini {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
-}
-.cal-day-label {
-  text-align: center;
-  font-size: 9px;
-  color: var(--muted);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  padding-bottom: 3px;
-}
-.cal-day {
-  aspect-ratio: 1;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-family: 'DM Mono', monospace;
-  font-weight: 500;
-}
-.cal-day.t { background: var(--teal); color: var(--bg); font-weight: 700; }
-.cal-day.r { background: var(--bg3); color: var(--muted); }
-.cal-day.e { opacity: 0; }
-
-/* ═══════════════════════════════════════
-   MIND SCREEN
-═══════════════════════════════════════ */
-
-.book-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-}
-.book-card:last-child { border-bottom: none; }
-
-.book-cover {
-  width: 44px;
-  height: 60px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.book-info { flex: 1; min-width: 0; }
-.book-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.book-author { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-.book-status {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-.topic-card {
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-}
-.topic-card:last-child { border-bottom: none; }
-.topic-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.topic-name { font-size: 14px; font-weight: 700; }
-.topic-pct { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; }
-.topic-meta { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
-.topic-bar-wrap { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
-.topic-bar { height: 100%; border-radius: 3px; transition: width 0.6s; }
-
-/* ADD FORM */
-.add-btn {
-  width: 100%;
-  padding: 14px;
-  background: transparent;
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  color: var(--muted);
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-.add-btn:active { background: var(--bg3); }
-
-/* ═══════════════════════════════════════
-   SOCIAL SCREEN
-═══════════════════════════════════════ */
-
-.bday-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.bday-row:last-child { border-bottom: none; }
-.bday-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-.bday-info { flex: 1; }
-.bday-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
-.bday-rel { font-size: 11px; color: var(--muted); }
-.bday-date {
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--yellow);
-}
-.bday-days { font-size: 10px; color: var(--muted); text-align: right; }
-
-.contact-card {
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-}
-.contact-card:last-child { border-bottom: none; }
-.contact-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-.contact-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--bg3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-.contact-name { font-size: 14px; font-weight: 700; }
-.contact-role { font-size: 11px; color: var(--muted); }
-.contact-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: var(--bg3);
-  color: var(--muted);
-}
-
-/* Exposure log */
-.exposure-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.exposure-row:last-child { border-bottom: none; }
-.exposure-dots {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding-top: 4px;
-}
-.e-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.exposure-content { flex: 1; }
-.exposure-act { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
-.exposure-meta { font-size: 11px; color: var(--muted); }
-.discomfort {
-  display: flex;
-  gap: 3px;
-  margin-top: 6px;
-}
-.d-star { font-size: 12px; }
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.022) 0%,transparent 55%);pointer-events:none}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.ct{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.badge{font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:6px}
 
 /* STAT GRID */
-.stat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.stat-cell {
-  background: var(--bg3);
-  border-radius: 12px;
-  padding: 14px 12px;
-  text-align: center;
-}
-.stat-num {
-  font-family: 'DM Mono', monospace;
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.stat-lbl {
-  font-size: 10px;
-  color: var(--muted);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.scell{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center}
+.snum{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:.04em;line-height:1;margin-bottom:2px}
+.slbl2{font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 
-/* INPUT STYLES */
-input, textarea, select {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--text);
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  padding: 10px 12px;
-  width: 100%;
-  outline: none;
-  -webkit-appearance: none;
-}
-input:focus, textarea:focus, select:focus {
-  border-color: rgba(255,255,255,0.2);
-}
+/* MONTH CALENDAR */
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.dlbl{text-align:center;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.04em;padding-bottom:4px}
+.mday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace;transition:transform .12s;cursor:default}
+.mday.trained{background:var(--fire);color:#fff;cursor:pointer}
+.mday.rest{background:var(--bg3);color:var(--muted)}
+.mday.empty{opacity:0}
+.mday.today{box-shadow:0 0 0 2px var(--fire)}
+.mday.trained:active{transform:scale(.87)}
 
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-.form-group { margin-bottom: 10px; }
-.form-label { font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; margin-bottom: 4px; display: block; }
+/* EXERCISE ROWS */
+.exrow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.exrow:last-child{border-bottom:none}
+.exname{font-size:13.5px;font-weight:600}
+.excat{font-size:10.5px;color:var(--muted);margin-top:2px}
+.exr{text-align:right}
+.exkg{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;color:var(--fire);line-height:1}
+.exdet{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px}
 
-.btn-primary {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: var(--radius);
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 6px;
-  transition: transform 0.15s, opacity 0.15s;
-}
-.btn-primary:active { transform: scale(0.97); opacity: 0.8; }
+/* PROJECTION TABLE */
+.ptable{width:100%;border-collapse:collapse;font-size:11px}
+.ptable th{background:var(--bg3);padding:7px 5px;text-align:center;color:var(--muted);font-size:9px;letter-spacing:.07em;text-transform:uppercase}
+.ptable td{padding:9px 5px;text-align:center;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:11.5px}
+.ptable tr:last-child td{border-bottom:none}
+.ptable .ecol{text-align:left;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px}
+.ptable .hl{color:var(--teal);font-weight:500}
 
-/* Close btn */
-.close-btn {
-  border: none;
-  background: var(--bg3);
-  color: var(--muted);
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  float: right;
-}
+/* HABIT ROWS */
+.hrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.hrow:last-child{border-bottom:none}
+.hico{font-size:24px;flex-shrink:0;width:32px;text-align:center}
+.hinfo{flex:1;min-width:0}
+.hname{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.hmeta{font-size:10px;color:var(--muted)}
+.hbar{height:3px;background:var(--bg3);border-radius:2px;margin-top:6px;overflow:hidden}
+.hbar-fill{height:100%;border-radius:2px;transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+.hnum{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.04em;line-height:1;flex-shrink:0;text-align:right}
+.hunit{font-size:9px;color:var(--muted);text-align:right;letter-spacing:.03em;margin-top:2px}
+
+/* CAL MINI */
+.cmini{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cmlbl{text-align:center;font-size:9px;font-weight:700;color:var(--muted);padding-bottom:3px}
+.cmday{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-family:'DM Mono',monospace}
+.cmday.t{background:var(--teal);color:var(--bg);font-weight:700}
+.cmday.r{background:var(--bg3);color:var(--muted)}
+.cmday.e{opacity:0}
+
+/* BOOKS */
+.brow{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.brow:last-child{border-bottom:none}
+.bcover{width:40px;height:55px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.binfo{flex:1;min-width:0}
+.btitle{font-size:13.5px;font-weight:700;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bauthor{font-size:11px;color:var(--muted);margin-bottom:6px}
+.bstatus{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.03em}
+.brating{font-size:11px;margin-top:5px}
+
+/* TOPICS */
+.trow{padding:12px 0;border-bottom:1px solid var(--border)}
+.trow:last-child{border-bottom:none}
+.tth{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}
+.tname{font-size:13.5px;font-weight:700}
+.tpct{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.04em}
+.tmeta{font-size:10.5px;color:var(--muted);margin-bottom:7px}
+.tbar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.tbar-fill{height:100%;border-radius:2px}
+
+/* BIRTHDAY ROWS */
+.bdrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.bdrow:last-child{border-bottom:none}
+.bdav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.bdname{font-size:13.5px;font-weight:700;margin-bottom:2px}
+.bdrel{font-size:10.5px;color:var(--muted)}
+.bddate{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--gold);letter-spacing:.04em;line-height:1}
+.bdgift{font-size:10px;color:var(--muted);text-align:right;margin-top:2px}
+
+/* CONTACT ROWS */
+.crow{padding:12px 0;border-bottom:1px solid var(--border)}
+.crow:last-child{border-bottom:none}
+.crh{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.crav{width:32px;height:32px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.crname{font-size:13.5px;font-weight:700}
+.crrole{font-size:10.5px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--bg3);color:var(--muted2)}
+
+/* EXPOSURE ROWS */
+.exprow{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)}
+.exprow:last-child{border-bottom:none}
+.expdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.expact{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.expmeta{font-size:10.5px;color:var(--muted)}
+.expnote{font-size:10.5px;color:var(--muted);font-style:italic;margin-top:4px;line-height:1.4}
+.disc{font-size:11px;margin-top:4px;letter-spacing:1px}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:200;display:none;align-items:flex-end}
+.overlay.open{display:flex}
+.modal{background:var(--card2);border:1px solid var(--border2);border-radius:22px 22px 0 0;padding:16px 16px calc(20px + var(--safe-bot));width:100%;max-height:80vh;overflow-y:auto;animation:slideup .26s cubic-bezier(.32,.72,0,1)}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhandle{width:34px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
+.mtitle{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.04em;margin-bottom:3px}
+.msub{font-size:11.5px;color:var(--muted);margin-bottom:16px}
+.closebtn{float:right;border:none;background:var(--bg3);color:var(--muted);border-radius:8px;padding:7px 12px;font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer}
+
+/* NOTICE */
+.notice{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:11.5px;color:var(--muted2);line-height:1.55;margin-bottom:12px}
+.notice strong{color:var(--text)}
+
+/* EMPTY */
+.empty{text-align:center;padding:24px 16px;font-size:12.5px;color:var(--muted);line-height:1.6}
 </style>
 </head>
 <body>
 
-<!-- TRAINING MODAL -->
-<div class="modal-overlay" id="sessionModal">
+<!-- SESSION MODAL -->
+<div class="overlay" id="sessionModal">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <button class="close-btn" onclick="closeModal()">✕ Cerrar</button>
-    <div class="modal-title" id="modalDate">—</div>
-    <div class="modal-sub" id="modalSub">—</div>
-    <div id="modalContent"></div>
+    <div class="mhandle"></div>
+    <button class="closebtn" onclick="document.getElementById('sessionModal').classList.remove('open')">✕ Cerrar</button>
+    <div class="mtitle" id="mDate"></div>
+    <div class="msub" id="mSub"></div>
+    <div id="mContent"></div>
   </div>
 </div>
 
-<!-- ADD HABIT MODAL -->
-<div class="modal-overlay" id="addHabitModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <button class="close-btn" onclick="document.getElementById('addHabitModal').classList.remove('open')">✕</button>
-    <div class="modal-title">Nuevo Hábito</div>
-    <div class="modal-sub" style="margin-bottom:16px">Configura la fecha de inicio</div>
-    <div class="form-group">
-      <label class="form-label">Nombre del hábito</label>
-      <input type="text" id="newHabitName" placeholder="Ej: Sin cafeína">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Emoji</label>
-      <input type="text" id="newHabitEmoji" placeholder="🚫" maxlength="2">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Fecha de inicio</label>
-      <input type="date" id="newHabitDate">
-    </div>
-    <button class="btn-primary" style="background:var(--teal);color:var(--bg)" onclick="addHabit()">Agregar Hábito</button>
+<!-- HEADER -->
+<header class="header">
+  <div>
+    <div class="htitle" id="hTitle">⚡ SUPERHUMAN</div>
+    <div class="hdate" id="hDate"></div>
   </div>
-</div>
-
-<!-- ADD SESSION MODAL -->
-<div class="modal-overlay" id="addSessionModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <button class="close-btn" onclick="document.getElementById('addSessionModal').classList.remove('open')">✕</button>
-    <div class="modal-title">Registrar Sesión</div>
-    <div class="modal-sub" style="margin-bottom:16px">Agrega los ejercicios de hoy</div>
-    <div class="form-group">
-      <label class="form-label">Fecha</label>
-      <input type="date" id="sessionDate">
-    </div>
-    <div id="exerciseInputs">
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Ejercicio</label><input type="text" class="ex-name-in" placeholder="Press Banca"></div>
-        <div class="form-group"><label class="form-label">Categoría</label><input type="text" class="ex-cat-in" placeholder="Pecho"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Series</label><input type="number" class="ex-sets-in" placeholder="4"></div>
-        <div class="form-group"><label class="form-label">Reps</label><input type="number" class="ex-reps-in" placeholder="8"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Peso (kg)</label><input type="number" class="ex-weight-in" placeholder="80" step="0.5"></div>
-    </div>
-    <button class="add-btn" onclick="addExerciseInput()">+ Añadir ejercicio</button>
-    <button class="btn-primary" style="background:var(--orange);color:white;margin-top:12px" onclick="saveSession()">💾 Guardar Sesión</button>
-  </div>
-</div>
-
-<!-- ADD BOOK MODAL -->
-<div class="modal-overlay" id="addBookModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <button class="close-btn" onclick="document.getElementById('addBookModal').classList.remove('open')">✕</button>
-    <div class="modal-title">Agregar Libro</div>
-    <div class="modal-sub" style="margin-bottom:16px">Registra tu lectura</div>
-    <div class="form-group"><label class="form-label">Título</label><input type="text" id="bookTitle" placeholder="Nombre del libro"></div>
-    <div class="form-group"><label class="form-label">Autor</label><input type="text" id="bookAuthor" placeholder="Autor"></div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Categoría</label><input type="text" id="bookCat" placeholder="Psicología"></div>
-      <div class="form-group"><label class="form-label">Estado</label>
-        <select id="bookStatus">
-          <option value="📖 Leyendo">📖 Leyendo</option>
-          <option value="✅ Leído">✅ Leído</option>
-          <option value="📋 Pendiente">📋 Pendiente</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group"><label class="form-label">Rating (1-5)</label><input type="number" id="bookRating" min="1" max="5" placeholder="5"></div>
-    <button class="btn-primary" style="background:var(--purple);color:white" onclick="addBook()">Agregar Libro</button>
-  </div>
-</div>
-
-<!-- ADD CONTACT MODAL -->
-<div class="modal-overlay" id="addContactModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <button class="close-btn" onclick="document.getElementById('addContactModal').classList.remove('open')">✕</button>
-    <div class="modal-title">Nuevo Contacto</div>
-    <div class="modal-sub" style="margin-bottom:16px">Expande tu red</div>
-    <div class="form-group"><label class="form-label">Nombre</label><input type="text" id="contactName" placeholder="Nombre completo"></div>
-    <div class="form-group"><label class="form-label">Rol / Profesión</label><input type="text" id="contactRole" placeholder="Ingeniero, Médico..."></div>
-    <div class="form-group"><label class="form-label">Cómo lo conociste</label><input type="text" id="contactHow" placeholder="Gym, trabajo, evento..."></div>
-    <div class="form-group"><label class="form-label">Intereses comunes</label><input type="text" id="contactInterests" placeholder="Deporte, emprendimiento..."></div>
-    <div class="form-group"><label class="form-label">Cumpleaños (opcional)</label><input type="text" id="contactBday" placeholder="DD/MM"></div>
-    <button class="btn-primary" style="background:var(--yellow);color:var(--bg)" onclick="addContact()">Agregar Contacto</button>
-  </div>
-</div>
-
-<!-- ADD EXPOSURE MODAL -->
-<div class="modal-overlay" id="addExposureModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <button class="close-btn" onclick="document.getElementById('addExposureModal').classList.remove('open')">✕</button>
-    <div class="modal-title">Exposición Social</div>
-    <div class="modal-sub" style="margin-bottom:16px">Registra tu interacción</div>
-    <div class="form-group"><label class="form-label">Actividad</label><input type="text" id="expAct" placeholder="Conversé con desconocido..."></div>
-    <div class="form-group"><label class="form-label">Personas involucradas</label><input type="text" id="expPeople" placeholder="Nombres o descripción"></div>
-    <div class="form-group"><label class="form-label">Incomodidad (1-5)</label><input type="number" id="expDiscomfort" min="1" max="5" placeholder="3"></div>
-    <div class="form-group"><label class="form-label">Reflexión</label><textarea id="expNote" rows="3" placeholder="¿Qué aprendiste?"></textarea></div>
-    <button class="btn-primary" style="background:var(--yellow);color:var(--bg)" onclick="addExposure()">Registrar</button>
-  </div>
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="header">
-  <div class="header-top">
-    <div class="header-title" id="headerTitle">⚡ Superhuman</div>
-    <div id="headerStreak" class="header-streak"></div>
-  </div>
-  <div class="header-date" id="headerDate"></div>
-</div>
-
-<!-- ══ TRAINING ══ -->
-<div class="screen active" id="screen-training">
-
-  <div class="section-label">Febrero 2025</div>
-  <div class="card">
-    <div class="card-header">
-      <span class="card-title">🏋️ Sesiones del mes</span>
-      <span class="card-badge" id="sessionCount" style="background:rgba(255,107,53,0.15);color:var(--orange)">— sesiones</span>
-    </div>
-    <div class="month-grid">
-      <div class="month-day-label">L</div><div class="month-day-label">M</div>
-      <div class="month-day-label">X</div><div class="month-day-label">J</div>
-      <div class="month-day-label">V</div><div class="month-day-label">S</div>
-      <div class="month-day-label">D</div>
-      <div id="monthGrid"></div>
-    </div>
-  </div>
-
-  <button class="add-btn" onclick="document.getElementById('addSessionModal').classList.add('open'); document.getElementById('sessionDate').value=new Date().toISOString().slice(0,10)">
-    <span>+</span> Registrar sesión de hoy
+  <button class="sync-btn" id="syncBtn" onclick="syncAll()">
+    <span class="si">↻</span>
+    <span id="syncLabel">Sincronizar</span>
   </button>
+</header>
 
-  <div class="section-label">Proyección Sobrecarga Progresiva</div>
-  <div class="card">
-    <div class="card-header">
-      <span class="card-title">📈 +2.5% por semana</span>
-      <span class="card-badge" style="background:rgba(0,212,170,0.15);color:var(--teal)">6 semanas</span>
-    </div>
-    <table class="progress-table">
-      <tr>
-        <th class="ex-col" style="text-align:left">Ejercicio</th>
-        <th>Actual</th>
-        <th>S2</th>
-        <th>S4</th>
-        <th>3M</th>
-      </tr>
-      <tbody id="projectionTable"></tbody>
-    </table>
-  </div>
-</div>
+<!-- SCREENS -->
+<section class="screen active" id="screen-training">
+  <div id="t-content"><div class="state-box"><div class="spinner"></div><div class="state-title">Cargando…</div></div></div>
+</section>
+<section class="screen" id="screen-habits">
+  <div id="h-content"><div class="state-box"><div class="spinner"></div><div class="state-title">Cargando…</div></div></div>
+</section>
+<section class="screen" id="screen-mind">
+  <div id="m-content"><div class="state-box"><div class="spinner"></div><div class="state-title">Cargando…</div></div></div>
+</section>
+<section class="screen" id="screen-social">
+  <div id="s-content"><div class="state-box"><div class="spinner"></div><div class="state-title">Cargando…</div></div></div>
+</section>
 
-<!-- ══ HABITS ══ -->
-<div class="screen" id="screen-habits">
-
-  <div class="section-label">Rachas activas</div>
-  <div class="card" id="habitsContainer"></div>
-
-  <button class="add-btn" onclick="document.getElementById('addHabitModal').classList.add('open'); document.getElementById('newHabitDate').value=new Date().toISOString().slice(0,10)">
-    <span>+</span> Nuevo hábito
-  </button>
-
-  <div class="section-label">Calendario de entrenamiento</div>
-  <div class="card">
-    <div class="card-header">
-      <span class="card-title">📅 Feb 2025</span>
-      <span class="card-badge" id="trainedCount" style="background:rgba(0,212,170,0.15);color:var(--teal)">— días</span>
-    </div>
-    <div class="cal-mini">
-      <div class="cal-day-label">L</div><div class="cal-day-label">M</div>
-      <div class="cal-day-label">X</div><div class="cal-day-label">J</div>
-      <div class="cal-day-label">V</div><div class="cal-day-label">S</div>
-      <div class="cal-day-label">D</div>
-      <div id="calMiniGrid"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ MIND ══ -->
-<div class="screen" id="screen-mind">
-
-  <div class="stat-grid">
-    <div class="stat-cell">
-      <div class="stat-num" id="booksReadCount" style="color:var(--purple)">0</div>
-      <div class="stat-lbl">Libros leídos</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-num" id="topicsCount" style="color:var(--teal)">0</div>
-      <div class="stat-lbl">Temas activos</div>
-    </div>
-  </div>
-
-  <div class="section-label">Biblioteca</div>
-  <div class="card" id="booksContainer"></div>
-
-  <button class="add-btn" onclick="document.getElementById('addBookModal').classList.add('open')">
-    <span>+</span> Agregar libro
-  </button>
-
-  <div class="section-label">Aprendizaje activo</div>
-  <div class="card" id="topicsContainer"></div>
-</div>
-
-<!-- ══ SOCIAL ══ -->
-<div class="screen" id="screen-social">
-
-  <div class="stat-grid">
-    <div class="stat-cell">
-      <div class="stat-num" id="contactsCount" style="color:var(--yellow)">0</div>
-      <div class="stat-lbl">Contactos</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-num" id="exposuresCount" style="color:var(--orange)">0</div>
-      <div class="stat-lbl">Exposiciones</div>
-    </div>
-  </div>
-
-  <div class="section-label">Cumpleaños próximos</div>
-  <div class="card" id="bdayContainer"></div>
-
-  <div class="section-label">Red de contactos</div>
-  <div class="card" id="contactsContainer"></div>
-
-  <button class="add-btn" onclick="document.getElementById('addContactModal').classList.add('open')">
-    <span>+</span> Agregar contacto
-  </button>
-
-  <div class="section-label">Exposición social</div>
-  <div class="card" id="exposureContainer"></div>
-
-  <button class="add-btn" onclick="document.getElementById('addExposureModal').classList.add('open')">
-    <span>+</span> Registrar interacción
-  </button>
-</div>
-
-<!-- BOTTOM NAV -->
+<!-- NAV -->
 <nav class="nav">
-  <button class="nav-btn active" data-tab="training" onclick="switchTab('training')">
-    <span class="icon">🏋️</span>Training
-  </button>
-  <button class="nav-btn" data-tab="habits" onclick="switchTab('habits')">
-    <span class="icon">🌱</span>Hábitos
-  </button>
-  <button class="nav-btn" data-tab="mind" onclick="switchTab('mind')">
-    <span class="icon">📚</span>Mente
-  </button>
-  <button class="nav-btn" data-tab="social" onclick="switchTab('social')">
-    <span class="icon">🤝</span>Social
-  </button>
+  <button class="nb active" data-t="training" onclick="go('training')"><span class="ni">🏋️</span>Training</button>
+  <button class="nb" data-t="habits" onclick="go('habits')"><span class="ni">🌱</span>Hábitos</button>
+  <button class="nb" data-t="mind" onclick="go('mind')"><span class="ni">📚</span>Mente</button>
+  <button class="nb" data-t="social" onclick="go('social')"><span class="ni">🤝</span>Social</button>
 </nav>
 
 <script>
-// ═══════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════
+'use strict';
 
-const STORE_KEY = 'superhuman_v2';
+/* ─── SHEET CONFIG ─────────────────────────────────────── */
+const SID = '1TgUmsdPhe_iMqZSt3B11ZPg_LNmjo4SuiD0b1S4YZgA';
+const GIDS = { training:'1240599111', habits:'1619760056', mind:'459953851', social:'1238337031' };
+const CSV  = gid => `https://docs.google.com/spreadsheets/d/${SID}/export?format=csv&gid=${gid}`;
 
-function loadState() {
-  try {
-    const saved = localStorage.getItem(STORE_KEY);
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return getDefaultState();
+/* ─── CACHE ─────────────────────────────────────────────── */
+const CK = 'sh_v5';
+let C = {};
+try { C = JSON.parse(localStorage.getItem(CK)||'{}'); } catch(e){}
+const save = () => { try { localStorage.setItem(CK, JSON.stringify(C)); } catch(e){} };
+
+/* ─── CSV PARSER ─────────────────────────────────────────
+   Returns array of arrays (raw rows, no header mapping).
+   Caller decides which row is header and which rows are data.
+──────────────────────────────────────────────────────────── */
+function parseCSV(text) {
+  return text.trim().split('\n').map(line => {
+    const cells = []; let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQ = !inQ; continue; }
+      if (ch === ',' && !inQ) { cells.push(cur.trim()); cur = ''; continue; }
+      cur += ch;
+    }
+    cells.push(cur.trim());
+    return cells;
+  });
 }
 
-function saveState() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {}
+/* Strip emojis and extra whitespace for comparison */
+function clean(s) {
+  return (s||'').replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27FF}\u{2300}-\u{23FF}✅❌📖📋🔥🌱📚🤝🏋️⚡🎂👥🎯💧😴🧘🚫]/gu,'').trim().toLowerCase();
 }
 
-function getDefaultState() {
-  return {
-    sessions: [
-      { date: '2025-02-03', exercises: [
-        { name: 'Press Banca', cat: 'Pecho', sets: 4, reps: 8, weight: 80 },
-        { name: 'Press Inclinado', cat: 'Pecho', sets: 3, reps: 10, weight: 60 },
-        { name: 'Fondos', cat: 'Pecho', sets: 3, reps: 12, weight: 0 },
-      ]},
-      { date: '2025-02-05', exercises: [
-        { name: 'Sentadilla', cat: 'Pierna', sets: 4, reps: 6, weight: 100 },
-        { name: 'Prensa', cat: 'Pierna', sets: 3, reps: 12, weight: 150 },
-        { name: 'Extensiones', cat: 'Pierna', sets: 3, reps: 15, weight: 40 },
-      ]},
-      { date: '2025-02-07', exercises: [
-        { name: 'Peso Muerto', cat: 'Espalda', sets: 4, reps: 5, weight: 120 },
-        { name: 'Remo con Barra', cat: 'Espalda', sets: 4, reps: 8, weight: 80 },
-        { name: 'Jalón Polea', cat: 'Espalda', sets: 3, reps: 10, weight: 70 },
-      ]},
-      { date: '2025-02-10', exercises: [
-        { name: 'Press Militar', cat: 'Hombro', sets: 4, reps: 8, weight: 60 },
-        { name: 'Elevaciones Lat.', cat: 'Hombro', sets: 3, reps: 15, weight: 14 },
-        { name: 'Curl Bíceps', cat: 'Brazos', sets: 3, reps: 12, weight: 20 },
-      ]},
-      { date: '2025-02-12', exercises: [
-        { name: 'Press Banca', cat: 'Pecho', sets: 4, reps: 8, weight: 82.5 },
-        { name: 'Press Inclinado', cat: 'Pecho', sets: 3, reps: 10, weight: 62.5 },
-      ]},
-      { date: '2025-02-14', exercises: [
-        { name: 'Sentadilla', cat: 'Pierna', sets: 4, reps: 6, weight: 102.5 },
-        { name: 'Peso Muerto', cat: 'Espalda', sets: 4, reps: 5, weight: 122.5 },
-      ]},
-      { date: '2025-02-17', exercises: [
-        { name: 'Press Militar', cat: 'Hombro', sets: 4, reps: 8, weight: 62.5 },
-        { name: 'Remo con Barra', cat: 'Espalda', sets: 4, reps: 8, weight: 82.5 },
-      ]},
-      { date: '2025-02-19', exercises: [
-        { name: 'Press Banca', cat: 'Pecho', sets: 4, reps: 8, weight: 85 },
-        { name: 'Fondos', cat: 'Pecho', sets: 4, reps: 12, weight: 0 },
-      ]},
-      { date: '2025-02-21', exercises: [
-        { name: 'Sentadilla', cat: 'Pierna', sets: 4, reps: 6, weight: 105 },
-        { name: 'Extensiones', cat: 'Pierna', sets: 3, reps: 15, weight: 42.5 },
-      ]},
-    ],
-    habits: [
-      { id: 1, name: 'Sin Alcohol', emoji: '🍺', startDate: '2025-01-01', color: '#FF6B35' },
-      { id: 2, name: 'Sin Golosinas', emoji: '🍬', startDate: '2025-01-15', color: '#FF4444' },
-      { id: 3, name: 'Sin Bebidas Azucaradas', emoji: '🥤', startDate: '2025-01-01', color: '#F59E0B' },
-      { id: 4, name: 'Sin Energéticas', emoji: '⚡', startDate: '2025-01-01', color: '#FFCC00' },
-      { id: 5, name: '2L Agua Diaria', emoji: '💧', startDate: '2025-02-01', color: '#00D4AA' },
-      { id: 6, name: 'Sueño 8h', emoji: '😴', startDate: '2025-02-10', color: '#8B5CF6' },
-    ],
-    books: [
-      { id: 1, title: 'Atomic Habits', author: 'James Clear', cat: 'Productividad', status: '✅ Leído', rating: 5 },
-      { id: 2, title: 'El Hombre en Busca de Sentido', author: 'Viktor Frankl', cat: 'Filosofía', status: '✅ Leído', rating: 5 },
-      { id: 3, title: "Can't Hurt Me", author: 'David Goggins', cat: 'Mentalidad', status: '📖 Leyendo', rating: 0 },
-      { id: 4, title: 'Deep Work', author: 'Cal Newport', cat: 'Productividad', status: '📋 Pendiente', rating: 0 },
-      { id: 5, title: 'Influence', author: 'Robert Cialdini', cat: 'Social', status: '📋 Pendiente', rating: 0 },
-    ],
-    topics: [
-      { id: 1, name: 'Python / Programación', source: 'Udemy', format: 'Curso Online', pct: 65, hours: 40 },
-      { id: 2, name: 'Nutrición Deportiva', source: 'YouTube + Libros', format: 'Mixto', pct: 40, hours: 15 },
-      { id: 3, name: 'Inglés Avanzado', source: 'Duolingo + Podcast', format: 'App + Audio', pct: 70, hours: 30 },
-      { id: 4, name: 'Inversiones', source: 'Podcast / Libros', format: 'Mixto', pct: 20, hours: 8 },
-    ],
-    contacts: [
-      { id: 1, name: '[Agregar contacto]', role: 'Profesión', how: 'Cómo lo conociste', interests: 'Intereses comunes', bday: '' },
-    ],
-    birthdays: [
-      { name: 'Mamá', rel: 'Familia', date: '15/03', gift: 'Experiencia memorable' },
-      { name: 'Papá', rel: 'Familia', date: '22/07', gift: 'Por definir' },
-    ],
-    exposures: [
-      { date: '2025-02-10', act: 'Inicié conversación en el gym', people: 'Desconocido', discomfort: 2, note: 'Fue más fácil de lo que pensé' },
-      { date: '2025-02-15', act: 'Hablé en reunión de trabajo', people: 'Equipo completo', discomfort: 3, note: 'Me preparé mejor esta vez' },
-      { date: '2025-02-20', act: 'Asistí a evento de networking', people: '5+ personas nuevas', discomfort: 4, note: 'Fue incómodo pero valió la pena' },
-    ],
-  };
+/* ─── FETCH ─────────────────────────────────────────────── */
+async function fetchRaw(tab) {
+  const res = await fetch(CSV(GIDS[tab]), {cache:'no-cache'});
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const rows = parseCSV(await res.text());
+  C[tab] = { rows, ts: Date.now() };
+  save();
+  return rows;
 }
 
-let state = loadState();
+/* ─── SYNC ─────────────────────────────────────────────── */
+let busy = false;
+async function syncAll() {
+  if (busy) return;
+  busy = true;
+  const btn = document.getElementById('syncBtn');
+  btn.className = 'sync-btn syncing';
+  document.getElementById('syncLabel').textContent = 'Cargando…';
+  let errs = 0;
+  await Promise.all(['training','habits','mind','social'].map(t =>
+    fetchRaw(t).catch(() => errs++)
+  ));
+  busy = false;
+  btn.className = errs ? 'sync-btn err' : 'sync-btn ok';
+  document.getElementById('syncLabel').textContent = errs ? `${errs} errores` : '✓ Listo';
+  setTimeout(() => { btn.className='sync-btn'; document.getElementById('syncLabel').textContent='Sincronizar'; }, 2800);
+  renderAll();
+}
 
-// ═══════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════
-
-const tabs = ['training','habits','mind','social'];
-const titles = { training:'🏋️ Training', habits:'🌱 Hábitos', mind:'📚 Mente', social:'🤝 Social' };
-
-function switchTab(tab) {
+/* ─── NAV ─────────────────────────────────────────────── */
+const TITLES = { training:'⚡ TRAINING', habits:'🌱 HÁBITOS', mind:'📚 MENTE', social:'🤝 SOCIAL' };
+function go(tab) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
   document.getElementById(`screen-${tab}`).classList.add('active');
-  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-  document.getElementById('headerTitle').textContent = titles[tab];
-  updateHeaderStreak(tab);
-  window.scrollTo(0, 0);
+  document.querySelector(`[data-t=${tab}]`).classList.add('active');
+  document.getElementById('hTitle').textContent = TITLES[tab];
+  window.scrollTo(0,0);
 }
 
-function updateHeaderStreak(tab) {
-  const el = document.getElementById('headerStreak');
-  if (tab === 'habits') {
-    const maxStreak = Math.max(...state.habits.map(h => calcDays(h.startDate)));
-    el.innerHTML = `🔥 ${maxStreak}d racha máx`;
-    el.style.display = 'flex';
-  } else if (tab === 'training') {
-    el.innerHTML = `💪 ${state.sessions.length} sesiones`;
-    el.style.display = 'flex';
-  } else if (tab === 'mind') {
-    const read = state.books.filter(b => b.status === '✅ Leído').length;
-    el.innerHTML = `📚 ${read} libros`;
-    el.style.display = 'flex';
-  } else {
-    el.style.display = 'none';
+/* ─── DATE UTILS ────────────────────────────────────────── */
+function parseDate(s) {
+  if (!s) return null;
+  s = s.trim().replace(/\//g,'-');
+  // YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return new Date(s.slice(0,10));
+  // DD-MM-YYYY
+  if (/^\d{2}-\d{2}-\d{4}/.test(s)) { const [d,m,y]=s.split('-'); return new Date(`${y}-${m}-${d}`); }
+  return null;
+}
+function calcDays(s) {
+  const d = parseDate(s);
+  if (!d || isNaN(d)) return 0;
+  return Math.max(0, Math.floor((Date.now()-d)/86400000));
+}
+function fmtFull(s) {
+  const d = parseDate(s);
+  if (!d) return s||'';
+  return d.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'});
+}
+function round25(v) { return Math.round(v/2.5)*2.5; }
+
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS7  = ['L','M','X','J','V','S','D'];
+function weekOffset(y,m) { return ((new Date(y,m,1).getDay())+6)%7; }
+function daysInMonth(y,m) { return new Date(y,m+1,0).getDate(); }
+
+/* ═══════════════════════════════════════════════════════════
+   TRAINING
+   Sheet structure:
+     Row 1: Title banner
+     Row 2: Empty
+     Row 3: Headers → Col B=Fecha, C=Ejercicio, D=Categoría, E=Series, F=Reps, G=Peso(kg), H=Notas, I=Próx.Sesión, J=%Progreso
+     Rows 4+: Data (until empty row ~20)
+     Row 21+: Projection table (SKIP)
+═══════════════════════════════════════════════════════════ */
+function parseTraining(rawRows) {
+  // rawRows is 0-indexed. Row 3 (index 2) = headers, data from index 3
+  // Stop when we hit a row where col B is empty AND col C starts looking like a section header
+  const sessions = [];
+  for (let i = 3; i < rawRows.length; i++) {
+    const row = rawRows[i];
+    const fecha = row[1]; // col B (0=A,1=B,2=C...)
+    const ejercicio = row[2]; // col C
+    if (!fecha || !ejercicio) continue;
+    // Stop if this looks like the projection section header
+    if (clean(ejercicio).includes('proyecci') || clean(fecha).includes('proyecci')) break;
+    if (clean(ejercicio).includes('ejercicio') && i > 10) break; // repeated header
+    sessions.push({
+      fecha:    fecha,
+      ejercicio: ejercicio,
+      categoria: row[3]||'',
+      series:    row[4]||'',
+      reps:      row[5]||'',
+      peso:      parseFloat((row[6]||'0').replace(',','.')) || 0,
+      notas:     row[7]||'',
+    });
   }
+  return sessions;
 }
-
-// ═══════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════
-
-function calcDays(dateStr) {
-  const start = new Date(dateStr);
-  const now = new Date();
-  return Math.max(0, Math.floor((now - start) / (1000 * 60 * 60 * 24)));
-}
-
-function formatDate(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
-}
-
-function closeModal() {
-  document.getElementById('sessionModal').classList.remove('open');
-}
-
-function round25(val) { return Math.round(val / 2.5) * 2.5; }
-
-// ═══════════════════════════════════════
-// TRAINING
-// ═══════════════════════════════════════
 
 function renderTraining() {
-  const trainedDays = new Set(state.sessions.map(s => parseInt(s.date.split('-')[2])));
-  const grid = document.getElementById('monthGrid');
-  grid.innerHTML = '';
-  
-  // Feb 2025 starts on Saturday (6th col, index 5)
-  const startOffset = 5; // Sat
-  const daysInMonth = 28;
-  const today = new Date().getDate();
-  
-  // fragment with offset
-  const frag = document.createDocumentFragment();
-  
-  for (let i = 0; i < startOffset; i++) {
-    const d = document.createElement('div');
-    d.className = 'month-day empty'; d.textContent = '';
-    frag.appendChild(d);
+  const el   = document.getElementById('t-content');
+  const raw  = C.training?.rows || [];
+
+  if (!raw.length) {
+    el.innerHTML = `<div class="state-box"><div class="spinner"></div><div class="state-title">Sin datos</div><div class="state-sub">Pulsa Sincronizar</div></div>`;
+    return;
   }
-  
-  for (let day = 1; day <= daysInMonth; day++) {
-    const d = document.createElement('div');
-    const isTrained = trainedDays.has(day);
-    const isToday = day === today;
-    d.className = `month-day ${isTrained ? 'trained' : 'rest'}${isToday ? ' today' : ''}`;
-    d.textContent = day;
-    if (isTrained) {
-      d.addEventListener('click', () => openSession(day));
-    }
-    frag.appendChild(d);
+
+  const sessions = parseTraining(raw);
+
+  if (!sessions.length) {
+    el.innerHTML = `<div class="state-box"><div class="state-icon">🏋️</div><div class="state-title">Sin sesiones aún</div><div class="state-sub">Agrega sesiones en la hoja Entrenamiento del Google Sheet y pulsa Sincronizar.</div></div>`;
+    return;
   }
-  
-  grid.appendChild(frag);
-  
-  document.getElementById('sessionCount').textContent = `${state.sessions.length} sesiones`;
 
-  // Projection
-  const basics = [
-    { name: 'Sentadilla', key: 'Sentadilla' },
-    { name: 'Peso Muerto', key: 'Peso Muerto' },
-    { name: 'Press Banca', key: 'Press Banca' },
-    { name: 'Press Militar', key: 'Press Militar' },
-    { name: 'Remo c/B.', key: 'Remo con Barra' },
-  ];
-
-  const tbody = document.getElementById('projectionTable');
-  tbody.innerHTML = '';
-
-  basics.forEach(b => {
-    // Find most recent weight for this exercise
-    let current = 0;
-    for (let i = state.sessions.length - 1; i >= 0; i--) {
-      const ex = state.sessions[i].exercises.find(e => e.name.includes(b.key.split(' ')[0]));
-      if (ex && ex.weight > 0) { current = ex.weight; break; }
-    }
-    if (!current) return;
-
-    const s2 = round25(current * 1.025);
-    const s4 = round25(current * Math.pow(1.025, 3));
-    const m3 = round25(current * Math.pow(1.025, 12));
-
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="ex-col">${b.name}</td>
-      <td>${current}</td>
-      <td>${s2}</td>
-      <td>${s4}</td>
-      <td class="highlight">${m3}</td>
-    `;
-    tbody.appendChild(tr);
+  // Group by date string
+  const byDate = {};
+  sessions.forEach(s => {
+    if (!byDate[s.fecha]) byDate[s.fecha] = [];
+    byDate[s.fecha].push(s);
   });
+  window._sessions = byDate;
+
+  // Trained days this month
+  const now = new Date(), yr = now.getFullYear(), mo = now.getMonth(), tod = now.getDate();
+  const trainedDays = new Set();
+  Object.keys(byDate).forEach(f => {
+    const d = parseDate(f);
+    if (d && d.getFullYear()===yr && d.getMonth()===mo) trainedDays.add(d.getDate());
+  });
+
+  // Calendar
+  const off = weekOffset(yr,mo), dim = daysInMonth(yr,mo);
+  let cells = DAYS7.map(d=>`<div class="dlbl">${d}</div>`).join('');
+  let inner = '';
+  for(let i=0;i<off;i++) inner+=`<div class="mday empty"></div>`;
+  for(let d=1;d<=dim;d++){
+    const tr=trainedDays.has(d), today=d===tod?' today':'';
+    const oc=tr?`onclick="openSession(${d})"`:''
+    inner+=`<div class="mday ${tr?'trained':'rest'}${today}" ${oc}>${d}</div>`;
+  }
+
+  // Projection: find latest weight per basic exercise
+  const BASICS = [
+    {label:'Sentadilla', match:'sentadilla'},
+    {label:'Peso Muerto', match:'peso muerto'},
+    {label:'Press Banca', match:'press banca'},
+    {label:'Press Militar', match:'press militar'},
+    {label:'Remo', match:'remo'},
+  ];
+  const maxW = {};
+  sessions.forEach(s => {
+    const ex = s.ejercicio.toLowerCase();
+    BASICS.forEach(b => { if(ex.includes(b.match) && s.peso>0) maxW[b.label]=Math.max(maxW[b.label]||0,s.peso); });
+  });
+  let projRows = '';
+  BASICS.forEach(b => {
+    if(!maxW[b.label]) return;
+    const c=maxW[b.label];
+    projRows+=`<tr>
+      <td class="ecol">${b.label}</td>
+      <td>${c}</td>
+      <td>${round25(c*1.025)}</td>
+      <td>${round25(c*Math.pow(1.025,3))}</td>
+      <td class="hl">${round25(c*Math.pow(1.025,12))}</td>
+    </tr>`;
+  });
+
+  el.innerHTML = `
+    <div class="slabel">${MONTHS[mo]} ${yr}</div>
+    <div class="card">
+      <div class="ch">
+        <span class="ct">📅 Sesiones del mes</span>
+        <span class="badge" style="background:rgba(255,95,31,.12);color:var(--fire)">${trainedDays.size} días</span>
+      </div>
+      <div class="mgrid">
+        ${cells}
+        <div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(7,1fr);gap:3px">${inner}</div>
+      </div>
+    </div>
+
+    ${projRows?`
+    <div class="slabel">Proyección sobrecarga progresiva</div>
+    <div class="card">
+      <div class="ch">
+        <span class="ct">📈 +2.5% por semana</span>
+        <span class="badge" style="background:rgba(0,229,176,.1);color:var(--teal)">3 meses</span>
+      </div>
+      <table class="ptable">
+        <tr><th class="ecol" style="text-align:left">Ejercicio</th><th>Actual</th><th>+2 sem</th><th>+4 sem</th><th>3 meses</th></tr>
+        ${projRows}
+      </table>
+    </div>`:''}
+
+    <div class="notice">💡 Toca un día naranja para ver los ejercicios de esa sesión. Actualiza el Sheet → pulsa <strong>Sincronizar</strong>.</div>
+  `;
 }
 
 function openSession(day) {
-  const dateStr = `2025-02-${String(day).padStart(2,'0')}`;
-  const session = state.sessions.find(s => s.date === dateStr);
-  if (!session) return;
-
-  document.getElementById('modalDate').textContent = formatDate(dateStr);
-  document.getElementById('modalSub').textContent = `${session.exercises.length} ejercicios · ${session.exercises.filter(e=>e.weight>0).reduce((a,e)=>Math.max(a,e.weight),0)} kg máximo`;
-
-  const content = document.getElementById('modalContent');
-  content.innerHTML = session.exercises.map(ex => `
-    <div class="exercise-row">
+  const now=new Date(), yr=now.getFullYear(), mo=now.getMonth();
+  const byDate = window._sessions||{};
+  // Find session for this day (any format)
+  let found = null;
+  Object.keys(byDate).forEach(f => {
+    const d = parseDate(f);
+    if (d && d.getFullYear()===yr && d.getMonth()===mo && d.getDate()===day) found=byDate[f];
+  });
+  if (!found) return;
+  const maxKg = Math.max(...found.map(s=>s.peso));
+  document.getElementById('mDate').textContent = fmtFull(found[0].fecha);
+  document.getElementById('mSub').textContent = `${found.length} ejercicios${maxKg>0?' · '+maxKg+' kg máximo':''}`;
+  document.getElementById('mContent').innerHTML = found.map(s=>`
+    <div class="exrow">
       <div>
-        <div class="ex-name">${ex.name}</div>
-        <div class="ex-cat">${ex.cat}</div>
+        <div class="exname">${s.ejercicio}</div>
+        <div class="excat">${s.categoria}</div>
       </div>
-      <div class="ex-stats">
-        <div class="ex-weight">${ex.weight > 0 ? ex.weight + ' kg' : 'Peso corporal'}</div>
-        <div class="ex-detail">${ex.sets} × ${ex.reps}</div>
+      <div class="exr">
+        <div class="exkg">${s.peso>0?s.peso+' kg':'Peso Corp.'}</div>
+        <div class="exdet">${s.series||'?'} × ${s.reps||'?'}</div>
       </div>
-    </div>
-  `).join('');
-
+    </div>`).join('');
   document.getElementById('sessionModal').classList.add('open');
 }
 
-function addExerciseInput() {
-  const container = document.getElementById('exerciseInputs');
-  const div = document.createElement('div');
-  div.innerHTML = `
-    <hr style="border-color:var(--border);margin:12px 0">
-    <div class="form-row">
-      <div class="form-group"><input type="text" class="ex-name-in" placeholder="Ejercicio"></div>
-      <div class="form-group"><input type="text" class="ex-cat-in" placeholder="Categoría"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><input type="number" class="ex-sets-in" placeholder="Series"></div>
-      <div class="form-group"><input type="number" class="ex-reps-in" placeholder="Reps"></div>
-    </div>
-    <div class="form-group"><input type="number" class="ex-weight-in" placeholder="Peso kg" step="0.5"></div>
-  `;
-  container.appendChild(div);
+/* ═══════════════════════════════════════════════════════════
+   HABITS
+   Sheet structure:
+     Row 1: Title
+     Row 2: Empty
+     Row 3: Section header "CONFIGURACIÓN"
+     Row 4: Headers → B=Hábito, C=Fecha Inicio, D=Días Racha, E=Estado
+     Rows 5-12: Habit data
+     Row 13+: Calendar (SKIP)
+═══════════════════════════════════════════════════════════ */
+function parseHabits(rawRows) {
+  const habits = [];
+  // Data starts at index 4 (row 5), stop at blank or calendar section
+  for (let i = 4; i < rawRows.length; i++) {
+    const row = rawRows[i];
+    const nombre = row[1]; // col B
+    const fecha  = row[2]; // col C
+    if (!nombre || !nombre.trim()) continue;
+    // Stop at calendar section or blank rows after data
+    const cn = clean(nombre);
+    if (cn.includes('calendario') || cn.includes('lun') || cn.includes('mar')) break;
+    habits.push({
+      nombre: nombre.trim(),
+      fechaInicio: fecha?fecha.trim():'',
+    });
+  }
+  return habits;
 }
 
-function saveSession() {
-  const date = document.getElementById('sessionDate').value;
-  if (!date) { alert('Selecciona una fecha'); return; }
+const HAB_EMOJIS = {
+  'alcohol':'🍺','golosina':'🍬','azucar':'🥤','azúcar':'🥤',
+  'energetica':'⚡','energética':'⚡','ayuno':'⏱','agua':'💧',
+  'sueno':'😴','sueño':'😴','meditaci':'🧘','default':'🎯'
+};
+function habitEmoji(name) {
+  const n = name.toLowerCase();
+  for(const [k,v] of Object.entries(HAB_EMOJIS)) if(n.includes(k)) return v;
+  return '🎯';
+}
+const HAB_COLORS = ['var(--fire)','var(--teal)','var(--gold)','var(--violet)','#2ECC71','#00BFFF','#FF69B4','#FFA500'];
 
-  const names = document.querySelectorAll('.ex-name-in');
-  const cats = document.querySelectorAll('.ex-cat-in');
-  const sets = document.querySelectorAll('.ex-sets-in');
-  const reps = document.querySelectorAll('.ex-reps-in');
-  const weights = document.querySelectorAll('.ex-weight-in');
+function renderHabits() {
+  const el  = document.getElementById('h-content');
+  const raw = C.habits?.rows || [];
 
-  const exercises = [];
-  for (let i = 0; i < names.length; i++) {
-    if (names[i].value.trim()) {
-      exercises.push({
-        name: names[i].value.trim(),
-        cat: cats[i].value.trim() || 'General',
-        sets: parseInt(sets[i].value) || 0,
-        reps: parseInt(reps[i].value) || 0,
-        weight: parseFloat(weights[i].value) || 0,
+  if (!raw.length) {
+    el.innerHTML = `<div class="state-box"><div class="spinner"></div><div class="state-title">Sin datos</div></div>`;
+    return;
+  }
+
+  const habits = parseHabits(raw);
+
+  let habitHTML = '';
+  habits.forEach((h, i) => {
+    const days  = calcDays(h.fechaInicio);
+    const pct   = Math.min(100, (days/90)*100);
+    const color = HAB_COLORS[i%HAB_COLORS.length];
+    const emoji = habitEmoji(h.nombre);
+    const medal = days>=90?'🏆':days>=30?'🔥':days>=14?'✅':days>=7?'🟡':'🔴';
+    habitHTML += `<div class="hrow">
+      <div class="hico">${emoji}</div>
+      <div class="hinfo">
+        <div class="hname">${h.nombre}</div>
+        <div class="hmeta">${h.fechaInicio ? 'Desde '+h.fechaInicio : 'Sin fecha'}</div>
+        <div class="hbar"><div class="hbar-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>
+      <div>
+        <div class="hnum" style="color:${color}">${days}</div>
+        <div class="hunit">días ${medal}</div>
+      </div>
+    </div>`;
+  });
+
+  // Training calendar from training cache
+  const now=new Date(), yr=now.getFullYear(), mo=now.getMonth();
+  const trainedDays = new Set();
+  (C.training?.rows||[]).slice(3).forEach(row => {
+    const d = parseDate(row[1]);
+    if (d && d.getFullYear()===yr && d.getMonth()===mo) trainedDays.add(d.getDate());
+  });
+  const off=weekOffset(yr,mo), dim=daysInMonth(yr,mo);
+  const calLbls = DAYS7.map(d=>`<div class="cmlbl">${d}</div>`).join('');
+  let calInner='';
+  for(let i=0;i<off;i++) calInner+=`<div class="cmday e"></div>`;
+  for(let d=1;d<=dim;d++) calInner+=`<div class="cmday ${trainedDays.has(d)?'t':'r'}">${d}</div>`;
+
+  el.innerHTML = `
+    <div class="slabel">Rachas activas</div>
+    <div class="card">${habitHTML||'<div class="empty">Agrega hábitos en el Google Sheet</div>'}</div>
+
+    <div class="slabel">Calendario de entrenamiento — ${MONTHS[mo]}</div>
+    <div class="card">
+      <div class="ch">
+        <span class="ct">📅 ${MONTHS[mo]} ${yr}</span>
+        <span class="badge" style="background:rgba(0,229,176,.1);color:var(--teal)">${trainedDays.size} días ✅</span>
+      </div>
+      <div class="cmini">
+        ${calLbls}
+        <div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(7,1fr);gap:3px">${calInner}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MIND / INTELECTUAL
+   Sheet structure:
+     Row 1: Title
+     Row 2: Empty
+     Row 3: Section header "LIBROS"
+     Row 4: Headers → B=Título, C=Autor, D=Inicio, E=Fin, F=Estado, G=Categoría, H=Rating
+     Rows 5-9: Book data
+     Row 10: Total Leídos (skip)
+     Row 11: Empty
+     Row 12: Section header "TEMAS EN APRENDIZAJE"
+     Row 13: Headers → B=Tema, C=Fuente, D=Formato, E=Inicio, F=% Avance, G=Horas Dedicadas, H=Notas
+     Rows 14+: Topic data
+═══════════════════════════════════════════════════════════ */
+function parseMind(rawRows) {
+  const books=[], topics=[];
+  let section='books';
+  for(let i=3; i<rawRows.length; i++){
+    const row=rawRows[i];
+    const b1=clean(row[1]||''), b2=clean(row[2]||'');
+    // Detect section transitions by row[1] content
+    if(b1.includes('temas en aprendizaje')||b1.includes('tema en aprendizaje')) { section='topics'; continue; }
+    if(b1.includes('total le')) continue; // skip totals row
+    if(b1==='' && b2==='') continue; // skip blank rows
+    // Skip header rows
+    if(b1==='título'||b1==='titulo'||b1==='tema') continue;
+
+    if(section==='books') {
+      const titulo = row[1]?.trim();
+      if(!titulo) continue;
+      books.push({
+        titulo,
+        autor:     row[2]?.trim()||'',
+        inicio:    row[3]?.trim()||'',
+        fin:       row[4]?.trim()||'',
+        estado:    row[5]?.trim()||'',
+        categoria: row[6]?.trim()||'',
+        rating:    parseInt(row[7])||0,
+      });
+    } else {
+      const tema = row[1]?.trim();
+      if(!tema) continue;
+      topics.push({
+        tema,
+        fuente:  row[2]?.trim()||'',
+        formato: row[3]?.trim()||'',
+        inicio:  row[4]?.trim()||'',
+        avance:  parseInt((row[5]||'0').replace('%',''))||0,
+        horas:   parseInt(row[6])||0,
+        notas:   row[7]?.trim()||'',
       });
     }
   }
-
-  if (!exercises.length) { alert('Agrega al menos un ejercicio'); return; }
-
-  const existing = state.sessions.findIndex(s => s.date === date);
-  if (existing >= 0) state.sessions[existing].exercises.push(...exercises);
-  else state.sessions.push({ date, exercises });
-
-  state.sessions.sort((a, b) => a.date.localeCompare(b.date));
-  saveState();
-  document.getElementById('addSessionModal').classList.remove('open');
-  renderTraining();
-  renderHabits(); // update calendar
+  return {books, topics};
 }
 
-// ═══════════════════════════════════════
-// HABITS
-// ═══════════════════════════════════════
-
-const habitColors = ['#FF6B35','#FF4444','#F59E0B','#FFCC00','#00D4AA','#8B5CF6','#22C55E','#00BFFF'];
-
-function renderHabits() {
-  const container = document.getElementById('habitsContainer');
-  container.innerHTML = '';
-
-  state.habits.forEach((h, idx) => {
-    const days = calcDays(h.startDate);
-    const pct = Math.min(100, (days / 90) * 100);
-    const color = h.color || habitColors[idx % habitColors.length];
-    const status = days >= 90 ? '🏆' : days >= 30 ? '🔥' : days >= 14 ? '✅' : days >= 7 ? '🟡' : '🔴';
-
-    const div = document.createElement('div');
-    div.className = 'habit-streak-card';
-    div.innerHTML = `
-      <div class="habit-icon">${h.emoji}</div>
-      <div class="habit-info">
-        <div class="habit-name">${h.name}</div>
-        <div class="habit-meta">Desde ${new Date(h.startDate).toLocaleDateString('es-CL',{day:'numeric',month:'short'})}</div>
-        <div class="streak-bar-wrap">
-          <div class="streak-bar" style="width:${pct}%;background:${color}"></div>
-        </div>
-      </div>
-      <div>
-        <div class="habit-streak-num" style="color:${color}">${days}</div>
-        <div class="habit-streak-unit">días ${status}</div>
-      </div>
-    `;
-    container.appendChild(div);
-  });
-
-  // Mini calendar
-  const trainedDays = new Set(state.sessions.map(s => parseInt(s.date.split('-')[2])));
-  document.getElementById('trainedCount').textContent = `${trainedDays.size} días ✅`;
-
-  const calGrid = document.getElementById('calMiniGrid');
-  calGrid.innerHTML = '';
-  const frag = document.createDocumentFragment();
-
-  for (let i = 0; i < 5; i++) {
-    const d = document.createElement('div'); d.className='cal-day e'; frag.appendChild(d);
-  }
-  for (let day = 1; day <= 28; day++) {
-    const d = document.createElement('div');
-    d.className = `cal-day ${trainedDays.has(day) ? 't' : 'r'}`;
-    d.textContent = day;
-    frag.appendChild(d);
-  }
-  calGrid.appendChild(frag);
-}
-
-function addHabit() {
-  const name = document.getElementById('newHabitName').value.trim();
-  const emoji = document.getElementById('newHabitEmoji').value.trim() || '🎯';
-  const date = document.getElementById('newHabitDate').value;
-  if (!name || !date) { alert('Completa todos los campos'); return; }
-  
-  const newId = Math.max(0, ...state.habits.map(h => h.id)) + 1;
-  state.habits.push({ id: newId, name, emoji, startDate: date, color: habitColors[newId % habitColors.length] });
-  saveState();
-  document.getElementById('addHabitModal').classList.remove('open');
-  document.getElementById('newHabitName').value = '';
-  document.getElementById('newHabitEmoji').value = '';
-  renderHabits();
-}
-
-// ═══════════════════════════════════════
-// MIND
-// ═══════════════════════════════════════
-
-const bookColors = ['#8B5CF6','#6C63FF','#A855F7','#7C3AED'];
-const statusColor = { '✅ Leído': '#22C55E', '📖 Leyendo': '#F59E0B', '📋 Pendiente': '#6B7280' };
+const BCOLS=[['rgba(155,138,255,.2)','var(--violet)'],['rgba(0,229,176,.15)','var(--teal)'],['rgba(255,95,31,.15)','var(--fire)'],['rgba(246,201,14,.15)','var(--gold)']];
+const TCOLS=['var(--teal)','var(--fire)','var(--violet)','var(--gold)'];
 
 function renderMind() {
-  const read = state.books.filter(b => b.status === '✅ Leído').length;
-  const active = state.topics.length;
-  document.getElementById('booksReadCount').textContent = read;
-  document.getElementById('topicsCount').textContent = active;
+  const el  = document.getElementById('m-content');
+  const raw = C.mind?.rows||[];
 
-  const booksEl = document.getElementById('booksContainer');
-  booksEl.innerHTML = '';
-  state.books.forEach((b, i) => {
-    const col = bookColors[i % bookColors.length];
-    const sc = statusColor[b.status] || '#6B7280';
-    const stars = b.rating ? '⭐'.repeat(b.rating) : '';
-    const div = document.createElement('div');
-    div.className = 'book-card';
-    div.innerHTML = `
-      <div class="book-cover" style="background:${col}22;color:${col}">📗</div>
-      <div class="book-info">
-        <div class="book-title">${b.title}</div>
-        <div class="book-author">${b.author} · ${b.cat}</div>
-        <span class="book-status" style="background:${sc}22;color:${sc}">${b.status}</span>
-        ${stars ? `<div style="margin-top:5px;font-size:12px">${stars}</div>` : ''}
+  if(!raw.length){
+    el.innerHTML=`<div class="state-box"><div class="spinner"></div><div class="state-title">Sin datos</div></div>`;
+    return;
+  }
+
+  const {books,topics}=parseMind(raw);
+  const read=books.filter(b=>{
+    const e=b.estado.toLowerCase();
+    return e.includes('leido')||e.includes('le_do')||e.includes('le\u00ído')||b.estado.includes('✅');
+  }).length;
+
+  let bookHTML='';
+  books.forEach((b,i)=>{
+    const [bg,fg]=BCOLS[i%4];
+    const done=b.estado.includes('✅')||b.estado.toLowerCase().includes('le');
+    const reading=b.estado.includes('📖')||b.estado.toLowerCase().includes('leyendo');
+    const sc=done?'rgba(46,204,113,.2)':reading?'rgba(246,201,14,.2)':'rgba(120,120,120,.15)';
+    const st=done?'#2ECC71':reading?'#F6C90E':'var(--muted)';
+    const stars=b.rating>0?'⭐'.repeat(Math.min(b.rating,5)):'';
+    bookHTML+=`<div class="brow">
+      <div class="bcover" style="background:${bg};color:${fg}">📗</div>
+      <div class="binfo">
+        <div class="btitle">${b.titulo}</div>
+        <div class="bauthor">${[b.autor,b.categoria].filter(Boolean).join(' · ')||'—'}</div>
+        <span class="bstatus" style="background:${sc};color:${st}">${b.estado||'—'}</span>
+        ${stars?`<div class="brating">${stars}</div>`:''}
       </div>
-    `;
-    booksEl.appendChild(div);
+    </div>`;
   });
 
-  const topicsEl = document.getElementById('topicsContainer');
-  topicsEl.innerHTML = '';
-  state.topics.forEach((t, i) => {
-    const col = ['#00D4AA','#FF6B35','#8B5CF6','#F59E0B'][i % 4];
-    const div = document.createElement('div');
-    div.className = 'topic-card';
-    div.innerHTML = `
-      <div class="topic-header">
-        <div class="topic-name">${t.name}</div>
-        <div class="topic-pct" style="color:${col}">${t.pct}%</div>
+  let topicHTML='';
+  topics.forEach((t,i)=>{
+    const c=TCOLS[i%4];
+    const pct=Math.min(100,Math.max(0,t.avance));
+    topicHTML+=`<div class="trow">
+      <div class="tth">
+        <div class="tname">${t.tema}</div>
+        <div class="tpct" style="color:${c}">${t.avance==='Continuo'?'∞':t.avance+'%'}</div>
       </div>
-      <div class="topic-meta">${t.source} · ${t.format} · ${t.hours}h dedicadas</div>
-      <div class="topic-bar-wrap">
-        <div class="topic-bar" style="width:${t.pct}%;background:${col}"></div>
-      </div>
-    `;
-    topicsEl.appendChild(div);
+      <div class="tmeta">${[t.fuente,t.formato,t.horas?t.horas+'h':''].filter(Boolean).join(' · ')}</div>
+      <div class="tbar"><div class="tbar-fill" style="width:${pct}%;background:${c}"></div></div>
+    </div>`;
   });
+
+  el.innerHTML=`
+    <div class="sgrid">
+      <div class="scell"><div class="snum" style="color:var(--violet)">${read}</div><div class="slbl2">Libros leídos</div></div>
+      <div class="scell"><div class="snum" style="color:var(--teal)">${topics.length}</div><div class="slbl2">Temas activos</div></div>
+    </div>
+    <div class="slabel">Biblioteca</div>
+    <div class="card">${bookHTML||'<div class="empty">Agrega libros en la hoja Intelectual</div>'}</div>
+    ${topicHTML?`<div class="slabel">Aprendizaje activo</div><div class="card">${topicHTML}</div>`:''}
+  `;
 }
 
-function addBook() {
-  const title = document.getElementById('bookTitle').value.trim();
-  const author = document.getElementById('bookAuthor').value.trim();
-  const cat = document.getElementById('bookCat').value.trim() || 'General';
-  const status = document.getElementById('bookStatus').value;
-  const rating = parseInt(document.getElementById('bookRating').value) || 0;
-  if (!title) { alert('Agrega el título'); return; }
-  
-  const newId = Math.max(0, ...state.books.map(b => b.id)) + 1;
-  state.books.unshift({ id: newId, title, author, cat, status, rating });
-  saveState();
-  document.getElementById('addBookModal').classList.remove('open');
-  document.getElementById('bookTitle').value = '';
-  document.getElementById('bookAuthor').value = '';
-  renderMind();
+/* ═══════════════════════════════════════════════════════════
+   SOCIAL
+   Sheet structure (from screenshot):
+     Rows 1-8: Cumpleaños section
+       Row ~4: Headers → B=Nombre, C=Relación, D=Fecha Cumpleaños, E=Días Restantes / Regalo
+       Rows 5-9: Birthday data
+     Row 12: Section header "RED DE CONTACTOS"
+     Row 13: Headers → B=Nombre, C=Profesión/Rol, D=Cómo lo conocí, E=Fecha, F=Intereses Comunes, G=Último Contacto, H=Acción Siguiente
+     Rows 14-18: Contact data
+     Row 21: Section header "TRACKER EXPOSICIÓN SOCIAL MENSUAL"
+     Row 22: Headers → B=Fecha, C=Actividad, D=Personas, E=Incomodidad(1-5), F=Logro, G=Reflexión
+     Rows 23+: Exposure data
+═══════════════════════════════════════════════════════════ */
+function parseSocial(rawRows) {
+  const bdays=[], contacts=[], exposures=[];
+  // Birthdays: rows 4-8 (index 3-7), col B=Nombre, C=Relación, D=Fecha, E=Regalo/info
+  for(let i=3;i<=8&&i<rawRows.length;i++){
+    const row=rawRows[i];
+    const nombre=(row[1]||'').trim();
+    if(!nombre||clean(nombre)==='nombre') continue;
+    bdays.push({ nombre, relacion:(row[2]||'').trim(), fecha:(row[3]||'').trim(), regalo:(row[4]||'').trim() });
+  }
+  // Contacts: rows 13-17 (index 12-16) — headers at index 12, data 13-17
+  for(let i=13;i<=18&&i<rawRows.length;i++){
+    const row=rawRows[i];
+    const nombre=(row[1]||'').trim();
+    if(!nombre) continue;
+    contacts.push({ nombre, rol:(row[2]||'').trim(), como:(row[3]||'').trim(), fecha:(row[4]||'').trim(), intereses:(row[5]||'').trim(), ultimoContacto:(row[6]||'').trim(), accion:(row[7]||'').trim() });
+  }
+  // Exposures: rows 22+ (index 22+)
+  for(let i=22;i<rawRows.length;i++){
+    const row=rawRows[i];
+    const fecha=(row[1]||'').trim(), act=(row[2]||'').trim();
+    if(!act) continue;
+    exposures.push({ fecha, actividad:act, personas:(row[3]||'').trim(), incomodidad:parseInt(row[4])||1, logro:(row[5]||'').trim(), reflexion:(row[6]||'').trim() });
+  }
+  return {bdays, contacts, exposures};
 }
 
-// ═══════════════════════════════════════
-// SOCIAL
-// ═══════════════════════════════════════
-
-const contactEmojis = ['👤','🧑','👩','🧑‍💼','👨‍💼','🧑‍🔬','👩‍🏫','👨‍🎨'];
+const BD_BG=['rgba(246,201,14,.18)','rgba(255,95,31,.15)','rgba(155,138,255,.15)','rgba(0,229,176,.12)'];
+const CR_EMO=['👤','🧑‍💼','👩‍💻','👨‍🎨','🧑‍🔬','👩‍🏫','🧑‍🚀','👨‍🍳'];
 
 function renderSocial() {
-  document.getElementById('contactsCount').textContent = state.contacts.length;
-  document.getElementById('exposuresCount').textContent = state.exposures.length;
+  const el  = document.getElementById('s-content');
+  const raw = C.social?.rows||[];
 
-  // Birthdays
-  const bdayEl = document.getElementById('bdayContainer');
-  bdayEl.innerHTML = '';
-  state.birthdays.forEach((b, i) => {
-    const cols = ['rgba(245,158,11,0.2)','rgba(255,107,53,0.2)','rgba(139,92,246,0.2)'];
-    const div = document.createElement('div');
-    div.className = 'bday-row';
-    div.innerHTML = `
-      <div class="bday-avatar" style="background:${cols[i%cols.length]}">🎂</div>
-      <div class="bday-info">
-        <div class="bday-name">${b.name}</div>
-        <div class="bday-rel">${b.rel}</div>
+  if(!raw.length){
+    el.innerHTML=`<div class="state-box"><div class="spinner"></div><div class="state-title">Sin datos</div></div>`;
+    return;
+  }
+
+  const {bdays,contacts,exposures}=parseSocial(raw);
+
+  let bdHTML='';
+  bdays.filter(b=>b.nombre&&!clean(b.nombre).includes('pareja')||b.fecha&&b.fecha!=='DD/MM').forEach((b,i)=>{
+    bdHTML+=`<div class="bdrow">
+      <div class="bdav" style="background:${BD_BG[i%4]}">🎂</div>
+      <div style="flex:1">
+        <div class="bdname">${b.nombre}</div>
+        <div class="bdrel">${b.relacion||'—'}</div>
+        ${b.regalo?`<div style="font-size:10px;color:var(--muted);margin-top:2px">🎁 ${b.regalo}</div>`:''}
       </div>
+      <div style="text-align:right">
+        <div class="bddate">${b.fecha||'—'}</div>
+      </div>
+    </div>`;
+  });
+
+  let ctHTML='';
+  contacts.filter(c=>c.nombre).forEach((c,i)=>{
+    ctHTML+=`<div class="crow">
+      <div class="crh">
+        <div class="crav">${CR_EMO[i%8]}</div>
+        <div><div class="crname">${c.nombre}</div><div class="crrole">${c.rol||'—'}</div></div>
+      </div>
+      <div class="tags">
+        ${c.como?`<span class="tag">📍 ${c.como}</span>`:''}
+        ${c.intereses?`<span class="tag">💡 ${c.intereses}</span>`:''}
+        ${c.accion?`<span class="tag">→ ${c.accion}</span>`:''}
+      </div>
+    </div>`;
+  });
+
+  let expHTML='';
+  [...exposures].filter(e=>e.actividad).reverse().forEach(e=>{
+    const d=e.incomodidad, cc=d>=4?'var(--fire)':d>=3?'var(--gold)':'var(--teal)';
+    expHTML+=`<div class="exprow">
+      <div class="expdot" style="background:${cc}"></div>
       <div>
-        <div class="bday-date">${b.date}</div>
-        <div class="bday-days">${b.gift}</div>
+        <div class="expact">${e.actividad}</div>
+        <div class="expmeta">${[e.fecha,e.personas].filter(Boolean).join(' · ')}</div>
+        <div class="disc">${'🔥'.repeat(d)}${'⬛'.repeat(5-d)}</div>
+        ${e.reflexion?`<div class="expnote">"${e.reflexion}"</div>`:''}
       </div>
-    `;
-    bdayEl.appendChild(div);
+    </div>`;
   });
 
-  // Contacts
-  const contEl = document.getElementById('contactsContainer');
-  contEl.innerHTML = '';
-  state.contacts.forEach((c, i) => {
-    const div = document.createElement('div');
-    div.className = 'contact-card';
-    div.innerHTML = `
-      <div class="contact-header">
-        <div class="contact-avatar">${contactEmojis[i % contactEmojis.length]}</div>
-        <div>
-          <div class="contact-name">${c.name}</div>
-          <div class="contact-role">${c.role}</div>
-        </div>
-      </div>
-      <div class="contact-tags">
-        ${c.how ? `<span class="tag">📍 ${c.how}</span>` : ''}
-        ${c.interests ? `<span class="tag">💡 ${c.interests}</span>` : ''}
-        ${c.bday ? `<span class="tag">🎂 ${c.bday}</span>` : ''}
-      </div>
-    `;
-    contEl.appendChild(div);
-  });
-
-  // Exposure
-  const expEl = document.getElementById('exposureContainer');
-  expEl.innerHTML = '';
-  [...state.exposures].reverse().forEach(e => {
-    const col = e.discomfort >= 4 ? '#FF6B35' : e.discomfort >= 3 ? '#F59E0B' : '#22C55E';
-    const div = document.createElement('div');
-    div.className = 'exposure-row';
-    div.innerHTML = `
-      <div class="exposure-dots">
-        <div class="e-dot" style="background:${col}"></div>
-        <div style="width:1px;height:30px;background:var(--border);margin:2px 0"></div>
-      </div>
-      <div class="exposure-content">
-        <div class="exposure-act">${e.act}</div>
-        <div class="exposure-meta">${e.date} · ${e.people}</div>
-        <div class="discomfort">${Array(e.discomfort).fill('🔥').join('')}${Array(5-e.discomfort).fill('⚫').join('')}</div>
-        ${e.note ? `<div style="font-size:11px;color:var(--muted);margin-top:4px;font-style:italic">"${e.note}"</div>` : ''}
-      </div>
-    `;
-    expEl.appendChild(div);
-  });
+  el.innerHTML=`
+    <div class="sgrid">
+      <div class="scell"><div class="snum" style="color:var(--gold)">${contacts.filter(c=>c.nombre).length}</div><div class="slbl2">Contactos</div></div>
+      <div class="scell"><div class="snum" style="color:var(--fire)">${exposures.filter(e=>e.actividad).length}</div><div class="slbl2">Exposiciones</div></div>
+    </div>
+    ${bdHTML?`<div class="slabel">Cumpleaños</div><div class="card">${bdHTML}</div>`:''}
+    ${ctHTML?`<div class="slabel">Red de contactos</div><div class="card">${ctHTML}</div>`:'<div class="slabel">Red de contactos</div><div class="card"><div class="empty">Agrega contactos en la hoja Social</div></div>'}
+    ${expHTML?`<div class="slabel">Exposición social</div><div class="card">${expHTML}</div>`:'<div class="slabel">Exposición social</div><div class="card"><div class="empty">Registra interacciones en la hoja Social</div></div>'}
+  `;
 }
 
-function addContact() {
-  const name = document.getElementById('contactName').value.trim();
-  if (!name) { alert('Agrega el nombre'); return; }
-  const newId = Math.max(0, ...state.contacts.map(c => c.id || 0)) + 1;
-  state.contacts.push({
-    id: newId,
-    name,
-    role: document.getElementById('contactRole').value.trim(),
-    how: document.getElementById('contactHow').value.trim(),
-    interests: document.getElementById('contactInterests').value.trim(),
-    bday: document.getElementById('contactBday').value.trim(),
-  });
-  saveState();
-  document.getElementById('addContactModal').classList.remove('open');
-  document.getElementById('contactName').value = '';
-  renderSocial();
-}
+/* ─── RENDER ALL ─────────────────────────────────────────── */
+function renderAll(){ renderTraining(); renderHabits(); renderMind(); renderSocial(); }
 
-function addExposure() {
-  const act = document.getElementById('expAct').value.trim();
-  if (!act) { alert('Describe la actividad'); return; }
-  state.exposures.push({
-    date: new Date().toISOString().slice(0,10),
-    act,
-    people: document.getElementById('expPeople').value.trim(),
-    discomfort: parseInt(document.getElementById('expDiscomfort').value) || 1,
-    note: document.getElementById('expNote').value.trim(),
-  });
-  saveState();
-  document.getElementById('addExposureModal').classList.remove('open');
-  document.getElementById('expAct').value = '';
-  document.getElementById('expNote').value = '';
-  renderSocial();
-}
+/* ─── INIT ─────────────────────────────────────────────── */
+(function(){
+  const now=new Date();
+  document.getElementById('hDate').textContent =
+    now.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
 
-// ═══════════════════════════════════════
-// HEADER DATE
-// ═══════════════════════════════════════
+  document.querySelectorAll('.overlay').forEach(m =>
+    m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); })
+  );
 
-function initHeader() {
-  const now = new Date();
-  document.getElementById('headerDate').textContent =
-    now.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  updateHeaderStreak('training');
-}
+  // Render from cache immediately (instant load)
+  renderAll();
 
-// Close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => {
-    if (e.target === m) m.classList.remove('open');
-  });
-});
-
-// ═══════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════
-
-initHeader();
-renderTraining();
-renderHabits();
-renderMind();
-renderSocial();
+  // Auto-sync if cache is empty or stale (> 1 hora)
+  const hasCacheData = ['training','habits','mind','social'].some(k => C[k]?.rows?.length);
+  const ts = Math.min(...['training','habits','mind','social'].map(k => C[k]?.ts||0));
+  const age = Date.now() - (isFinite(ts)?ts:0);
+  if(!hasCacheData || age > 60*60*1000) syncAll();
+})();
 </script>
 </body>
 </html>
